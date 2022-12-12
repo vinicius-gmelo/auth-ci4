@@ -6,5 +6,5 @@ Páginas de login e cadastro feitas com o [CodeIgniter 4](https://codeigniter.co
 ## Uso
 Crie um banco no MySQL, [configure a conexão do CodeIgniter 4 com o banco](https://www.codeigniter.com/user_guide/database/configuration.html) e crie a tabela de usuários utilizando `user.sql`. Execute o comando `php spark serve` no diretório raiz do CI4 para servir a aplicação com o servidor de testes do framework. Se necessário, siga as [instruções para executar o framework](https://codeigniter4.github.io/userguide/installation/running.html).
 ## TODO
-1. `Models` e autenticação/autorização.
-2. `db.sql` com o banco de exemplo utilizado.
+1. Testar o modelo 'user'.
+2. Página 'home' do usuário.
