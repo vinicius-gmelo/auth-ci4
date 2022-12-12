@@ -42,7 +42,7 @@ class Validation extends BaseConfig
   // Rules
   // --------------------------------------------------------------------
 
-  public $registration = ['name' => 'required', 'email' => 'required|valid_email', 'password' => 'required|min_length[5]|max_length[20]', 'password_conf' => 'required|matches[password]'];
+  public $registration = ['name' => 'required', 'username' => 'alpha_numeric_space|min_length[6]|max_length[30]', 'email' => 'required|valid_email', 'password' => 'required|min_length[5]|max_length[20]', 'password_conf' => 'required|matches[password]'];
 
   public $login = ['username' => 'required', 'password' => 'required'];
 
@@ -50,18 +50,23 @@ class Validation extends BaseConfig
     'name' => [
       'required' => 'Preencha com um nome.',
     ],
+    'username' => [
+      'alpha_numeric_space' => 'Apenas caracteres alfanuméricos e espaços.',
+      'min_length' => 'Mínimo de 6 caracteres.',
+      'max_length' => 'Máximo de 30 caracteres.',
+    ],
     'email' => [
       'required' => 'Preencha com um email.',
       'valid_email' => 'Email não é válido.'
     ],
     'password' => [
       'required' => 'Preencha com uma senha.',
-      'min_length' => 'A senha deve ter no mínimo 5 caracteres.',
-      'max_length' => 'A senha deve ter no máximo 20 caracteres.',
+      'min_length' => 'Mínimo de 5 caracteres.',
+      'max_length' => 'Máximo de 20 caracteres.',
     ],
     'password_conf' => [
-      'required' => 'Preencha com a confirmação de senha.',
-      'matches' => 'Confirmação de senha não é igual à senha inserida.'
+      'required' => 'Confirme sua senha.',
+      'matches' => 'Não é igual à senha inserida.'
     ],
   ];
 
