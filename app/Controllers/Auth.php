@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\User;
 
 class Auth extends BaseController
 {
@@ -25,15 +26,23 @@ class Auth extends BaseController
     return 0;
   }
 
-  private function user_exist(string $username)
+  private function user_exists(string $username)
   {
+    $user_model = new User();
+    if ($user_model->where('username', $username)->first() || $user_model->where('email', $username)->first()) return 1;
+    return 0;
+  }
+
+  private function logout()
+  {
+    $this->session->destroy();
   }
 
   private function login()
   {
-    if ($_POST['username'] === 'vini' && $_POST['password'] === '12345') {
-      $_SESSION['user_id'] = '1';
-      $this->session->markAsTempdata('user_id', 60);
+    if (user_exists($_POST['username'])) {
+
+      $_SESSION['user_id'] = $user_id;
       return 1;
     }
     $this->messenger->set_message('error', 'Não foi possível realizar o login. Por favor, verifique o nome de usuário e a senha.');
