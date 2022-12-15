@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\User;
+use App\Libraries\Messenger;
+use App\Libraries\Validator;
 
 class Auth extends BaseController
 {
@@ -17,16 +19,16 @@ class Auth extends BaseController
   {
     $this->session = \Config\Services::session();
     # pass session obj by reference to Validator and Messenger classes
-    $this->messenger = new \App\Libraries\Messenger($this->session);
-    $this->my_validator = new \App\Libraries\Validator($this->session);
+    $this->messenger = new Messenger($this->session);
+    $this->my_validator = new Validator($this->session);
+    $this->user_model = new User();
   }
 
   private function authenticate(): bool
   {
     if (isset($_SESSION['user_id'])) {
-      $this->user_model = new User();
-      if ($user_model->find($_SESSION['user_id'])) {
-        $user = $userModel->find($_SESSION['user_id']);
+      if ($this->user_model->find($_SESSION['user_id'])) {
+        $user = $this->userModel->find($_SESSION['user_id']);
         if ($user['session_id'] == $this->session->session_id) return 1;
       }
     }
@@ -35,26 +37,23 @@ class Auth extends BaseController
 
   private function user_exists(string $username): bool
   {
-    $this->user_model = new User();
-    if ($user_model->where('username', $username)->first() || $user_model->where('email', $username)->first()) return 1;
+    if ($this->user_model->where('username', $username)->first() || $this->user_model->where('email', $username)->first()) return 1;
     return 0;
   }
 
   private function logout(): void
   {
-    $this->user_model = new User();
-    $user = $user_model->find($_SESSION['user_id']);
+    $user = $this->user_model->find($_SESSION['user_id']);
     unset($user['session_id']);
-    $user_model->update($user['id'], $user);
+    $this->user_model->update($user['id'], $user);
     $this->session->destroy();
   }
 
-  private function login(): bool
+  private function login(string $username): bool
   {
-    $this->user_model = new User();
     if ($this->user_exists($_POST['username'])) {
-      $user = $user_model->where('username', $username)->first() ?? $user_model->where('email', $username)->first();
-      if (!$user['password'] == $_POST['password']) return 0;
+      $user = $this->user_model->where('username', $username)->first() ?? $this->user_model->where('email', $username)->first();
+      if (!password_verify($_POST['password'], $user['password'])) return 0;
       $user->set(['session_id' => $this->session->session_id])->update();
       $_SESSION['user_id'] = $user['id'];
       return 1;
@@ -70,9 +69,8 @@ class Auth extends BaseController
       'password' => $_POST['password']
     ];
     if (!empty($_POST['username'])) $data['username'] = $_POST['username'];
-    $this->user_model = new User();
-    if (!$user_model->insert($data, false)) return 0;
-    $_SESSION['user_id'] = $user_model->getInsertID();
+    if (!$this->user_model->insert($data, false)) return 0;
+    $_SESSION['user_id'] = $this->user_model->getInsertID();
     return 1;
   }
 
