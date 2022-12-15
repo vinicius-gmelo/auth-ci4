@@ -40,7 +40,7 @@ class Auth extends BaseController
     return 0;
   }
 
-  private function logout()
+  private function logout(): void
   {
     $this->user_model = new User();
     $user = $user_model->find($_SESSION['user_id']);
@@ -62,7 +62,7 @@ class Auth extends BaseController
     return 0;
   }
 
-  private function create_user()
+  private function create_user(): bool
   {
     $data = [
       'name' => $_POST['name'],
