@@ -3,108 +3,70 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\User;
-use App\Libraries\Messenger;
-use App\Libraries\Validator;
+use App\Models\UserModel;
+use App\Entities\User;
 
 class Auth extends BaseController
 {
 
   private $session;
+
+  private $auth;
   private $messenger;
   private $my_validator;
-  private $user_model;
 
   public function __construct()
   {
+
     $this->session = \Config\Services::session();
-    # pass session obj by reference to Validator and Messenger classes
-    $this->messenger = new Messenger($this->session);
-    $this->my_validator = new Validator($this->session);
-    $this->user_model = new User();
+
+    $this->auth = new \App\Libraries\Auth(UserModel::class, User::class);
+    $this->messenger = new \App\Libraries\Messenger($this->session);
+    $this->my_validator = new \App\Libraries\Validator($this->session);
   }
 
-  private function authenticate(): bool
-  {
-    if (isset($_SESSION['user_id'])) {
-      if ($this->user_model->find($_SESSION['user_id'])) {
-        $user = $this->userModel->find($_SESSION['user_id']);
-        if ($user['session_id'] == $this->session->session_id) return 1;
-      }
-    }
-    return 0;
-  }
-
-  private function user_exists(string $username): bool
-  {
-    if ($this->user_model->where('username', $username)->first() || $this->user_model->where('email', $username)->first()) return 1;
-    return 0;
-  }
-
-  private function logout(): void
-  {
-    $user = $this->user_model->find($_SESSION['user_id']);
-    unset($user['session_id']);
-    $this->user_model->update($user['id'], $user);
-    $this->session->destroy();
-  }
-
-  private function login(string $username): bool
-  {
-    if ($this->user_exists($_POST['username'])) {
-      $user = $this->user_model->where('username', $username)->first() ?? $this->user_model->where('email', $username)->first();
-      if (!password_verify($_POST['password'], $user['password'])) return 0;
-      $user->set(['session_id' => $this->session->session_id])->update();
-      $_SESSION['user_id'] = $user['id'];
-      return 1;
-    }
-    return 0;
-  }
-
-  private function create_user(): bool
-  {
-    $data = [
-      'name' => $_POST['name'],
-      'email' => $_POST['email'],
-      'password' => $_POST['password']
-    ];
-    if (!empty($_POST['username'])) $data['username'] = $_POST['username'];
-    if (!$this->user_model->insert($data, false)) return 0;
-    $_SESSION['user_id'] = $this->user_model->getInsertID();
-    return 1;
-  }
-
-  public function login_page()
+  public function login()
   {
     $data['page_title'] = 'Login Page';
-    $method = $this->request->getMethod();
-    if ($method == 'get') {
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       # check logged in cookie
-      if ($this->authenticate()) return view('home', ['page_title' => 'Home page']);
+      $user = $this->auth->authenticate();
+      if ($user) return view('home', ['page_title' => 'Home page', 'user' => $user->toArray()]);
       return view('auth/login', $data);
-    } elseif ($method == 'post') {
-      if (!$this->my_validator->validate_form('login')) return redirect()->back()->withInput();
-      if (!$this->login()) $this->messenger->set_message('error', 'Verifique o nome de usuário e a senha.');
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if (!$this->my_validator->validate_form($_POST, 'login')) return redirect()->back()->withInput();
+      if (!$this->auth->login($_POST)) {
+        $this->messenger->set_message('error', 'Verifique o nome de usuário e a senha.');
+        return redirect()->back()->withInput();
+      }
       return redirect()->back();
     }
   }
 
-  public function registration_page()
+  public function registration()
   {
     $data['page_title'] = 'Registration Page';
-    $method = strtolower($this->request->getMethod());
-    if ($method == 'get') {
-      if (isset($_SESSION['user_id'])) redirect()->to('/auth');
+    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      if ($this->auth->authenticate()) redirect()->to('/auth');
       return view('auth/registration', $data);
-    } elseif ($method == 'post') {
-      if (!$this->my_validator->validate_form('registration')) return redirect()->back()->withInput();
-      if (!$this->create_user()) {
-        # setup messenger with user model's errors
-        foreach ($this->user->errors() as $error) {
+    } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if (!$this->my_validator->validate_form($_POST, 'registration')) return redirect()->back()->withInput();
+      if (!$this->auth->create_user($_POST)) {
+        foreach ($this->auth->get_errors() as $error) {
           $this->messenger->set_message('error', $error);
         }
+      } else {
+        $this->messenger->set_message('success', 'Usuário criado com sucesso.');
+        return redirect()->to('/auth');
       }
       return redirect()->back();
     }
+  }
+
+
+  public function logout()
+  {
+    $this->auth->logout();
+    return redirect()->back();
   }
 }

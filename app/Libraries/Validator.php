@@ -24,11 +24,11 @@ class Validator
     $this->errors = null;
   }
 
-  public function validate_form(string $form): bool
+  public function validate_form(array $form_data, string $form_type): bool
   {
     $this->reset();
     # rules and error messages => /Config/Validation.php
-    $this->validation->run($_POST, $form);
+    $this->validation->run($form_data, $form_type);
     $this->errors = $this->validation->getErrors();
     if (!empty($this->errors)) {
       $_SESSION['validation_errors'] = $this->errors;
