@@ -35,7 +35,7 @@ class Registration extends BaseController
     $data['page_title'] = 'Registration Page';
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       $user = $this->auth->authenticate();
-      if ($user) redirect()->to('/');
+      if ($user) return redirect()->to('/');
       return view('registration', $data);
     } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (!$this->my_validator->validate_form($_POST, 'registration')) return redirect()->back()->withInput();
