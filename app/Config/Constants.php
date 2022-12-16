@@ -1,5 +1,7 @@
 <?php
 
+define('PARTIALS_PATH', APPPATH . 'Views/partials/');
+define('LAYOUTS_PATH', APPPATH . 'Views/layouts/');
 /*
  | --------------------------------------------------------------------
  | App Namespace

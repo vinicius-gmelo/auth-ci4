@@ -28,4 +28,20 @@ class UserModel extends Model
       'is_unique' => 'Nome de usuário já utilizado.',
     ],
   ];
+
+  public function create_user(array $data): bool
+  {
+    $data = array_intersect_key($data, array_flip(array('name', 'email', 'password', 'username')));
+    $user = new User($data);
+    if (!$this->save($user)) {
+      return 0;
+    }
+    return 1;
+  }
+
+  public function user_exists(string $username): bool
+  {
+    if ($this->where('username', $username)->first() || $this->where('email', $username)->first()) return 1;
+    return 0;
+  }
 }

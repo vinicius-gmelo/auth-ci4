@@ -10,7 +10,7 @@ foreach (['name' => ['nome', 'seu nome', 'text',], 'email' => ['email', 'seu ema
     <div class="col-md-8 offset-2 my-auto">
       <h4>Cadastre-se</h4>
       <hr>
-      <form class='form' action="<?= $_SERVER['REQUEST_URI'] ?>" method="post" novalidate>
+      <form class='form' action="/cadastro" method="post" novalidate>
         <?= csrf_field() ?>
         <?php
         foreach ($fields as $field) : ?>
@@ -30,7 +30,7 @@ foreach (['name' => ['nome', 'seu nome', 'text',], 'email' => ['email', 'seu ema
           <input type="submit" class='btn btn-primary' value='Enviar'>
         </div>
       </form>
-      <p>Já possui uma conta? Faça o <a href="<?= base_url('auth') ?>">login</a>.</p>
+      <p>Já possui uma conta? Faça o <a href="<?= base_url('login') ?>">login</a>.</p>
     </div>
   </div>
 </div>
