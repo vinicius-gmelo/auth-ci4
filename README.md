@@ -1,5 +1,5 @@
-# Login/Cadastro com o CI4
-Páginas de login e cadastro feitas com o [CodeIgniter 4](https://codeigniter.com/user_guide/intro/index.html). Validação dos dados realizada no servidor, através das classes de validação do framework.
+# Autenticação, login e cadastro com o CI4
+Páginas de login e cadastro feitas com o [CodeIgniter 4](https://codeigniter.com/user_guide/intro/index.html). Validação dos dados dos formulários realizada no servidor, através das classes de validação do framework. Autenticação antes de permitir acesso à página inicial do usuário.
 ## Requerimentos
 - `CI4`: faça o [download do CI4](https://codeigniter.com/download) e substitua o diretório `app` pelo diretório contido neste repositório.
 - `MySQL`.
