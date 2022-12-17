@@ -4,8 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
-use App\Libraries\Messenger;
-use App\Libraries\Validator;
+use App\Libraries\{Messenger, Validator};
 
 class Auth extends BaseController
 {

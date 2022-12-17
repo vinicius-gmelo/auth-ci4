@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Libraries\Auth;
 
 class Home extends BaseController
 {
@@ -15,7 +16,7 @@ class Home extends BaseController
   {
 
     $this->session = \Config\Services::session();
-    $this->user = (new \App\Libraries\Auth(UserModel::class))->authenticate();
+    $this->user = (new Auth(UserModel::class))->authenticate();
   }
 
   public function index()

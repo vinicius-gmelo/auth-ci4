@@ -4,10 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
-
-use App\Libraries\Auth;
-use App\Libraries\Messenger;
-use App\Libraries\Validator;
+use App\Libraries\{Auth, Messenger, Validator};
 
 class Registration extends BaseController
 {
