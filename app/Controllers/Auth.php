@@ -17,7 +17,7 @@ class Auth extends BaseController
   public function __construct()
   {
     $this->session = \Config\Services::session();
-    $this->auth = new \App\Libraries\Auth(UserModel::class, User::class);
+    $this->auth = new \App\Libraries\Auth(UserModel::class);
     $this->messenger = new Messenger($this->session);
     $this->my_validator = new Validator($this->session);
   }

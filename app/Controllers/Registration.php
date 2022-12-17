@@ -18,7 +18,7 @@ class Registration extends BaseController
   {
 
     $this->session = \Config\Services::session();
-    $this->auth = new Auth(UserModel::class, User::class);
+    $this->auth = new Auth(UserModel::class);
     $this->messenger = new Messenger($this->session);
     $this->my_validator = new Validator($this->session);
   }
