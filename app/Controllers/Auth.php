@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
-use App\Entities\User;
 use App\Libraries\Messenger;
 use App\Libraries\Validator;
 
@@ -32,7 +31,7 @@ class Auth extends BaseController
       if ($user) return redirect()->to('/');
       return view('login', $data);
     } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      if (!$this->my_validator->validate_form($_POST, 'login')) return redirect()->back()->withInput();
+      if ($this->my_validator->validate_form($_POST, 'login')) return redirect()->back()->withInput();
       if (!$this->auth->login($_POST)) {
         $this->messenger->set_message('error', 'Verifique o nome de usuário e a senha.');
         return redirect()->back()->withInput();

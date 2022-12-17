@@ -24,7 +24,7 @@ class Validator
     $this->errors = null;
   }
 
-  public function validate_form(array $form_data, string $form_type): bool
+  public function validate_form(array $form_data, string $form_type): ?array
   {
     $this->reset();
     # rules and error messages => /Config/Validation.php
@@ -33,9 +33,9 @@ class Validator
     if (!empty($this->errors)) {
       $_SESSION['validation_errors'] = $this->errors;
       $this->session->markAsFlashdata('validation_errors');
-      return 0;
+      return $this->errors;
     }
-    return 1;
+    return null;
   }
 
   public function get_errors(): array

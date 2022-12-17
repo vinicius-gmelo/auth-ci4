@@ -6,21 +6,18 @@ class Auth
 {
 
   private $user_model;
-  private $user_entity;
-  private array $errors;
 
-  public function __construct($user_model, $user_entity)
+  public function __construct($user_model)
   {
     $this->user_model = $user_model;
-    $this->user_entity = $user_entity;
   }
 
-  public function authenticate()
+  public function authenticate(): ?object
   {
     $user_model = new $this->user_model();
     $user = $user_model->where('session_id', session_id())->first();
     if ($user) return $user;
-    return 0;
+    return null;
   }
 
   public function logout(): void
@@ -32,7 +29,7 @@ class Auth
     session_destroy();
   }
 
-  public function login(array $data): bool
+  public function login(array $data): ?object
   {
     $user_model = new $this->user_model();
     $username = $data['username'];
@@ -42,8 +39,8 @@ class Auth
       if (!password_verify($password, $user->password)) return 0;
       $user->session_id = session_id();
       $user_model->save($user);
-      return 1;
+      return $user;
     }
-    return 0;
+    return null;
   }
 }
