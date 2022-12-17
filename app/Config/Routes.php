@@ -33,9 +33,9 @@ $routes->set404Override();
  * --------------------------------------------------------------------
  */
 
-$routes->match(['get', 'post'], '/login', 'Auth::login');
-$routes->match(['get', 'post'], '/cadastro', 'Registration::registration');
-$routes->get('/logout', 'Auth::logout');
+$routes->match(['get', 'post'], '/login', 'UserAccount::login');
+$routes->match(['get', 'post'], '/cadastro', 'UserAccount::registration');
+$routes->get('/logout', 'UserAccount::logout');
 $routes->get('/', 'Home::index', ['filter' => 'auth']);
 
 /*
