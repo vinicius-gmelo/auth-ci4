@@ -1,10 +1,3 @@
-<?php
-# form fields
-foreach (['username' => ['nome de usuário/e-mail', 'seu nome de usuário', 'text',], 'password' => ['senha', 'sua senha', 'password',],] as $field_name => $attr_arr) {
-  $fields[$field_name] = ['name' => $field_name, 'value' => $attr_arr[0], 'placeholder' => $attr_arr[1], 'type' => $attr_arr[2]];
-}
-?>
-
 <div class='container'>
   <div class='row' style='height:100vh;'>
     <div class="col-md-8 offset-2 my-auto">
@@ -12,25 +5,39 @@ foreach (['username' => ['nome de usuário/e-mail', 'seu nome de usuário', 'tex
       <hr>
       <form class='form' action="/login" method="post" novalidate>
         <?= csrf_field() ?>
-        <?php
-        foreach ($fields as $field) : ?>
-          <div class="form-group mb-3">
-            <label for="<?= $field['name'] ?>"><?= ucfirst($field['value']) ?></label>
-            <?php if (isset($_SESSION['validation_errors'][$field['name']])) : ?>
-              <input type="<?= $field['type'] ?>" class='form-control is-invalid' id="<?= $field['name'] ?>" name="<?= $field['name'] ?>" value="<?= old($field['name']) ?>" placeholder="<?= ucfirst($field['placeholder']) ?>">
-              <div class="invalid-feedback">
-                <?= $_SESSION['validation_errors'][$field['name']] ?>
-              </div>
-            <?php else : ?>
-              <input type="<?= $field['type'] ?>" class="form-control" id="<?= $field['name'] ?>" name="<?= $field['name'] ?>" value="<?= old($field['name']) ?>" placeholder="<?= ucfirst($field['placeholder']) ?>">
-            <?php endif ?>
-          </div>
-        <?php endforeach ?>
+
+        <div class="form-group mb-3">
+          <label for='username'>Nome de usuário/email:</label>
+          <?php if (isset($_SESSION['validation_errors']['username'])) : ?>
+            <input type='text' class='form-control is-invalid' id='username' name='username' value="<?= old('username') ?>" placeholder='Seu nome de usuário'>
+            <div class="invalid-feedback">
+              <?= $_SESSION['validation_errors']['username'] ?>
+            </div>
+          <?php else : ?>
+            <input type='text' class="form-control" id='username' name='username' value="<?= old('username') ?>" placeholder='Seu nome de usuário'>
+          <?php endif ?>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for='password'>Senha:</label>
+          <?php if (isset($_SESSION['validation_errors']['password'])) : ?>
+            <input type='password' class='form-control is-invalid' id='password' name='password' value="<?= old('password') ?>" placeholder='Sua senha'>
+            <div class="invalid-feedback">
+              <?= $_SESSION['validation_errors']['password'] ?>
+            </div>
+          <?php else : ?>
+            <input type='password' class="form-control" id='password' name='password' value="<?= old('password') ?>" placeholder='Sua senha'>
+          <?php endif ?>
+        </div>
+
         <div class="form-group mb-3">
           <input type="submit" class='btn btn-primary' value='Login'>
         </div>
+
       </form>
+
       <p>Ainda não possui uma conta? <a href="<?= base_url('/cadastro') ?>">Cadastre-se</a>.</p>
+
     </div>
   </div>
 </div>
